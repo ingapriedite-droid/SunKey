@@ -1,57 +1,81 @@
-/**
- * API Routes for SunKey Application
- * Handles requests to calculate Gene Keys from birth data
- */
-
 import express from 'express';
-import { calculateSunLongitude, getZodiacSign } from '../utils/suncalc.js';
+import { createClient } from '@supabase/supabase-js';
+import { calculateSunLongitude, calculateSunPosition, getZodiacSign } from '../utils/suncalc.js';
 import { mapLongitudeToGeneKey, getAllGeneKeySegments } from '../utils/mapToGeneKey.js';
+import { geocodeLocation, searchCities } from '../utils/geocoding.js';
+import { convertLocalToUTC, validateDateTime } from '../utils/timezone.js';
 import geneKeysData from '../data/genekeys.json' assert { type: 'json' };
 
 const router = express.Router();
 
-/**
- * GET /api/sunkey
- * Calculate Sun Key from birth data
- * Query parameters:
- *   - date: YYYY-MM-DD
- *   - time: HH:mm
- *   - place: City name (currently for display only, timezone conversion would require geocoding API)
- */
-router.get('/sunkey', (req, res) => {
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL,
+  process.env.VITE_SUPABASE_ANON_KEY
+);
+
+router.get('/sunkey', async (req, res) => {
   try {
     const { date, time, place } = req.query;
 
-    // Validate required parameters
-    if (!date || !time) {
+    if (!date || !time || !place) {
       return res.status(400).json({
         error: 'Missing required parameters',
-        message: 'Please provide date (YYYY-MM-DD) and time (HH:mm)'
+        message: 'Please provide date (YYYY-MM-DD), time (HH:mm), and place'
       });
     }
 
-    // Parse date and time into a Date object
-    // Note: This assumes UTC. For production, you'd want to convert based on birthplace timezone
-    const [year, month, day] = date.split('-').map(Number);
-    const [hours, minutes] = time.split(':').map(Number);
-
-    const birthDate = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
-
-    // Validate date
-    if (isNaN(birthDate.getTime())) {
+    const validation = validateDateTime(date, time, 'UTC');
+    if (!validation.valid) {
       return res.status(400).json({
         error: 'Invalid date or time',
-        message: 'Please provide valid date and time values'
+        message: validation.error
       });
     }
 
-    // Calculate Sun's longitude
-    const sunLongitude = calculateSunLongitude(birthDate);
+    const location = await geocodeLocation(place);
 
-    // Map to Gene Key
+    const { data: cachedCalc } = await supabase
+      .from('sun_calculations_cache')
+      .select('*')
+      .eq('date', date)
+      .eq('time', time)
+      .eq('latitude', location.latitude.toFixed(7))
+      .eq('longitude', location.longitude.toFixed(7))
+      .maybeSingle();
+
+    if (cachedCalc) {
+      return res.json({
+        birthDate: {
+          date,
+          time,
+          place: `${location.city}, ${location.country}`,
+          timezone: location.timezone
+        },
+        location: {
+          city: location.city,
+          country: location.country,
+          latitude: parseFloat(cachedCalc.latitude),
+          longitude: parseFloat(cachedCalc.longitude),
+          timezone: cachedCalc.timezone,
+          source: 'cache'
+        },
+        sunLongitude: parseFloat(cachedCalc.sun_longitude),
+        zodiacSign: cachedCalc.zodiac_sign,
+        geneKey: cachedCalc.gene_key,
+        shadow: geneKeysData[cachedCalc.gene_key.toString()].shadow,
+        gift: geneKeysData[cachedCalc.gene_key.toString()].gift,
+        siddhi: geneKeysData[cachedCalc.gene_key.toString()].siddhi,
+        accuracy: 'High precision (VSOP87, cached)',
+        utcDateTime: cachedCalc.utc_datetime
+      });
+    }
+
+    const utcDateTime = convertLocalToUTC(date, time, location.timezone);
+
+    const sunLongitude = calculateSunLongitude(utcDateTime);
+
     const geneKeyNumber = mapLongitudeToGeneKey(sunLongitude);
 
-    // Get Gene Key data
     const geneKeyInfo = geneKeysData[geneKeyNumber.toString()];
 
     if (!geneKeyInfo) {
@@ -61,22 +85,49 @@ router.get('/sunkey', (req, res) => {
       });
     }
 
-    // Get zodiac sign
     const zodiacSign = getZodiacSign(sunLongitude);
 
-    // Return the complete result
+    try {
+      await supabase
+        .from('sun_calculations_cache')
+        .insert({
+          date,
+          time,
+          latitude: location.latitude.toFixed(7),
+          longitude: location.longitude.toFixed(7),
+          timezone: location.timezone,
+          utc_datetime: utcDateTime.toISOString(),
+          sun_longitude: sunLongitude.toFixed(7),
+          zodiac_sign: zodiacSign,
+          gene_key: geneKeyNumber
+        });
+    } catch (cacheError) {
+      console.warn('Failed to cache calculation:', cacheError);
+    }
+
     res.json({
       birthDate: {
         date,
         time,
-        place: place || 'Not specified'
+        place: `${location.city}, ${location.country}`,
+        timezone: location.timezone
       },
-      sunLongitude: parseFloat(sunLongitude.toFixed(2)),
+      location: {
+        city: location.city,
+        country: location.country,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        timezone: location.timezone,
+        source: location.source
+      },
+      sunLongitude: parseFloat(sunLongitude.toFixed(4)),
       zodiacSign,
       geneKey: geneKeyNumber,
       shadow: geneKeyInfo.shadow,
       gift: geneKeyInfo.gift,
-      siddhi: geneKeyInfo.siddhi
+      siddhi: geneKeyInfo.siddhi,
+      accuracy: 'High precision (VSOP87)',
+      utcDateTime: utcDateTime.toISOString()
     });
 
   } catch (error) {
@@ -88,15 +139,10 @@ router.get('/sunkey', (req, res) => {
   }
 });
 
-/**
- * GET /api/wheel
- * Get all 64 Gene Key segments for rendering the wheel
- */
 router.get('/wheel', (req, res) => {
   try {
     const segments = getAllGeneKeySegments();
 
-    // Add Gene Key info to each segment
     const wheelData = segments.map(segment => ({
       ...segment,
       ...geneKeysData[segment.geneKey.toString()]
@@ -113,10 +159,6 @@ router.get('/wheel', (req, res) => {
   }
 });
 
-/**
- * GET /api/genekey/:number
- * Get information for a specific Gene Key
- */
 router.get('/genekey/:number', (req, res) => {
   try {
     const number = parseInt(req.params.number);
@@ -144,6 +186,30 @@ router.get('/genekey/:number', (req, res) => {
 
   } catch (error) {
     console.error('Error getting Gene Key:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: error.message
+    });
+  }
+});
+
+router.get('/cities/search', (req, res) => {
+  try {
+    const { q, limit } = req.query;
+
+    if (!q || q.length < 2) {
+      return res.status(400).json({
+        error: 'Invalid query',
+        message: 'Please provide at least 2 characters'
+      });
+    }
+
+    const results = searchCities(q, parseInt(limit) || 10);
+
+    res.json({ cities: results });
+
+  } catch (error) {
+    console.error('Error searching cities:', error);
     res.status(500).json({
       error: 'Internal server error',
       message: error.message

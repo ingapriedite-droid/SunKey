@@ -42,7 +42,9 @@
 
                     <div class="form-group">
                         <label for="birth-place">Place of Birth</label>
-                        <input type="text" id="birth-place" name="place" placeholder="City, Country" required>
+                        <input type="text" id="birth-place" name="place" placeholder="City, Country" required autocomplete="off">
+                        <div id="city-suggestions" class="city-suggestions"></div>
+                        <p class="help-text">Start typing to see suggestions</p>
                     </div>
 
                     <button type="submit" class="btn btn-primary">
@@ -78,9 +80,11 @@
 
                     <div class="birth-info">
                         <p><strong>Birth Date:</strong> <span id="result-date">--</span></p>
-                        <p><strong>Birth Time:</strong> <span id="result-time">--</span></p>
+                        <p><strong>Birth Time:</strong> <span id="result-time">--</span> <span id="result-timezone" class="timezone-badge">--</span></p>
                         <p><strong>Birth Place:</strong> <span id="result-place">--</span></p>
+                        <p><strong>Coordinates:</strong> <span id="result-coords">--</span></p>
                         <p><strong>Sun Position:</strong> <span id="result-longitude">--</span>° (<span id="result-zodiac">--</span>)</p>
+                        <p class="accuracy-note"><span id="result-accuracy">--</span></p>
                     </div>
                 </div>
 

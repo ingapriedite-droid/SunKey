@@ -12,6 +12,8 @@ const loading = document.getElementById('loading');
 const errorOverlay = document.getElementById('error');
 const errorText = document.getElementById('error-text');
 const errorClose = document.getElementById('error-close');
+const birthPlaceInput = document.getElementById('birth-place');
+const citySuggestions = document.getElementById('city-suggestions');
 
 // API Configuration
 const API_BASE_URL = window.location.origin + '/api';
@@ -27,6 +29,10 @@ function init() {
     birthForm.addEventListener('submit', handleFormSubmit);
     backBtn.addEventListener('click', showInputSection);
     errorClose.addEventListener('click', hideError);
+    birthPlaceInput.addEventListener('input', handleCityInput);
+    birthPlaceInput.addEventListener('blur', () => {
+        setTimeout(() => citySuggestions.classList.remove('active'), 200);
+    });
 }
 
 /**
@@ -94,9 +100,17 @@ function displayResults(result) {
     // Update birth information
     document.getElementById('result-date').textContent = result.birthDate.date;
     document.getElementById('result-time').textContent = result.birthDate.time;
+    document.getElementById('result-timezone').textContent = result.birthDate.timezone || result.location?.timezone || '';
     document.getElementById('result-place').textContent = result.birthDate.place;
-    document.getElementById('result-longitude').textContent = result.sunLongitude.toFixed(2);
+
+    if (result.location) {
+        const coords = `${result.location.latitude.toFixed(4)}\u00b0, ${result.location.longitude.toFixed(4)}\u00b0`;
+        document.getElementById('result-coords').textContent = coords;
+    }
+
+    document.getElementById('result-longitude').textContent = result.sunLongitude.toFixed(4);
     document.getElementById('result-zodiac').textContent = result.zodiacSign;
+    document.getElementById('result-accuracy').textContent = result.accuracy || 'Standard calculation';
 
     // Update spectrum (Shadow, Gift, Siddhi)
     document.getElementById('result-shadow').textContent = result.shadow;
@@ -284,6 +298,51 @@ function renderWheel(segments, highlightGeneKey) {
     // Clear and append
     container.innerHTML = '';
     container.appendChild(svg);
+}
+
+/**
+ * Handle city input and show autocomplete suggestions
+ */
+let citySearchTimeout;
+async function handleCityInput(e) {
+    const query = e.target.value;
+
+    if (query.length < 2) {
+        citySuggestions.classList.remove('active');
+        return;
+    }
+
+    clearTimeout(citySearchTimeout);
+
+    citySearchTimeout = setTimeout(async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/cities/search?q=${encodeURIComponent(query)}&limit=10`);
+            if (!response.ok) throw new Error('Search failed');
+
+            const data = await response.json();
+
+            citySuggestions.innerHTML = '';
+
+            if (data.cities && data.cities.length > 0) {
+                data.cities.forEach(city => {
+                    const item = document.createElement('div');
+                    item.className = 'city-suggestion-item';
+                    item.innerHTML = `<strong>${city.city}</strong>, <small>${city.country}</small>`;
+                    item.addEventListener('click', () => {
+                        birthPlaceInput.value = city.label;
+                        citySuggestions.classList.remove('active');
+                    });
+                    citySuggestions.appendChild(item);
+                });
+                citySuggestions.classList.add('active');
+            } else {
+                citySuggestions.classList.remove('active');
+            }
+        } catch (error) {
+            console.error('City search error:', error);
+            citySuggestions.classList.remove('active');
+        }
+    }, 300);
 }
 
 /**

@@ -1,61 +1,53 @@
 /**
  * Sun Calculation Utility
- * Calculates the Sun's ecliptic longitude at a given date/time
+ * Calculates the Sun's ecliptic longitude using Astronomy Engine
+ * Provides professional-grade accuracy based on VSOP87 theory
  */
+
+import Astronomy from 'astronomy-engine';
 
 /**
- * Calculate Julian Day Number from a date
- * @param {Date} date - JavaScript Date object
- * @returns {number} Julian Day Number
+ * Calculate the Sun's ecliptic longitude with high precision
+ * Uses Astronomy Engine which implements VSOP87 theory
+ * Accurate to within 1 arcminute
+ * @param {Date} utcDate - Birth date and time in UTC
+ * @returns {number} Sun's ecliptic longitude in degrees (0-360)
  */
-function getJulianDayNumber(date) {
-  const a = Math.floor((14 - (date.getMonth() + 1)) / 12);
-  const y = date.getFullYear() + 4800 - a;
-  const m = (date.getMonth() + 1) + 12 * a - 3;
+export function calculateSunLongitude(utcDate) {
+  const ecliptic = Astronomy.Ecliptic(utcDate);
 
-  let jdn = date.getDate() + Math.floor((153 * m + 2) / 5) + 365 * y +
-            Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  let longitude = ecliptic.elon;
 
-  // Add fractional day for time
-  const hours = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
-  jdn += (hours - 12) / 24;
+  if (longitude < 0) {
+    longitude += 360;
+  }
 
-  return jdn;
+  return longitude;
 }
 
 /**
- * Calculate the Sun's ecliptic longitude
- * Uses a simplified astronomical algorithm
- * @param {Date} date - Birth date and time
- * @returns {number} Sun's ecliptic longitude in degrees (0-360)
+ * Calculate Sun position with additional details
+ * @param {Date} utcDate - Birth date and time in UTC
+ * @returns {Object} Detailed sun position information
  */
-export function calculateSunLongitude(date) {
-  // Get Julian Day Number
-  const jd = getJulianDayNumber(date);
+export function calculateSunPosition(utcDate) {
+  const ecliptic = Astronomy.Ecliptic(utcDate);
+  const equatorial = Astronomy.Equator('Sun', utcDate, null, true, true);
 
-  // Calculate number of days since J2000.0 (January 1, 2000, 12:00 TT)
-  const n = jd - 2451545.0;
+  let longitude = ecliptic.elon;
+  if (longitude < 0) {
+    longitude += 360;
+  }
 
-  // Mean longitude of the Sun (in degrees)
-  let L = (280.460 + 0.9856474 * n) % 360;
-  if (L < 0) L += 360;
+  let latitude = ecliptic.elat;
 
-  // Mean anomaly of the Sun (in degrees)
-  let g = (357.528 + 0.9856003 * n) % 360;
-  if (g < 0) g += 360;
-
-  // Convert to radians
-  const gRad = g * Math.PI / 180;
-
-  // Ecliptic longitude of the Sun (in degrees)
-  // This includes the equation of center correction
-  let lambda = L + 1.915 * Math.sin(gRad) + 0.020 * Math.sin(2 * gRad);
-
-  // Normalize to 0-360 range
-  lambda = lambda % 360;
-  if (lambda < 0) lambda += 360;
-
-  return lambda;
+  return {
+    longitude,
+    latitude,
+    rightAscension: equatorial.ra,
+    declination: equatorial.dec,
+    distance: equatorial.dist
+  };
 }
 
 /**
