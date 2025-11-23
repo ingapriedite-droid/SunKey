@@ -5,6 +5,7 @@ import { mapLongitudeToGeneKey, getAllGeneKeySegments } from '../utils/mapToGene
 import { geocodeLocation, searchCities } from '../utils/geocoding.js';
 import { convertLocalToUTC, validateDateTime } from '../utils/timezone.js';
 import geneKeysData from '../data/genekeys.json' assert { type: 'json' };
+import hexagramsData from '../data/hexagrams.json' assert { type: 'json' };
 
 const router = express.Router();
 
@@ -77,6 +78,7 @@ router.get('/sunkey', async (req, res) => {
     const geneKeyNumber = mapLongitudeToGeneKey(sunLongitude);
 
     const geneKeyInfo = geneKeysData[geneKeyNumber.toString()];
+    const hexagram = hexagramsData[geneKeyNumber.toString()];
 
     if (!geneKeyInfo) {
       return res.status(500).json({
@@ -126,6 +128,7 @@ router.get('/sunkey', async (req, res) => {
       shadow: geneKeyInfo.shadow,
       gift: geneKeyInfo.gift,
       siddhi: geneKeyInfo.siddhi,
+      hexagram: hexagram,
       accuracy: 'High precision (VSOP87)',
       utcDateTime: utcDateTime.toISOString()
     });

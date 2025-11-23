@@ -97,6 +97,11 @@ function displayResults(result) {
     document.getElementById('result-number').textContent = result.geneKey;
     document.getElementById('detail-number').textContent = result.geneKey;
 
+    // Display hexagram
+    if (result.hexagram) {
+        displayHexagram(result.hexagram);
+    }
+
     // Update birth information
     document.getElementById('result-date').textContent = result.birthDate.date;
     document.getElementById('result-time').textContent = result.birthDate.time;
@@ -116,6 +121,26 @@ function displayResults(result) {
     document.getElementById('result-shadow').textContent = result.shadow;
     document.getElementById('result-gift').textContent = result.gift;
     document.getElementById('result-siddhi').textContent = result.siddhi;
+}
+
+/**
+ * Display I-Ching hexagram
+ * @param {Object} hexagram - Hexagram data with lines array
+ */
+function displayHexagram(hexagram) {
+    const container = document.getElementById('hexagram-display');
+    container.innerHTML = '';
+
+    // Display lines from bottom to top (traditional I-Ching order)
+    for (let i = hexagram.lines.length - 1; i >= 0; i--) {
+        const line = document.createElement('div');
+        line.className = hexagram.lines[i] === 1 ? 'hexagram-line solid' : 'hexagram-line broken';
+        container.appendChild(line);
+    }
+
+    // Display hexagram name and Chinese character
+    document.getElementById('hexagram-name').textContent = hexagram.name;
+    document.getElementById('iching-character').textContent = hexagram.iching;
 }
 
 /**

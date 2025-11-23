@@ -614,3 +614,69 @@ footer .small {
     color: var(--text-secondary);
     font-style: italic;
 }
+
+/* Hexagram Display */
+.gene-key-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+}
+
+.hexagram-display {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-2);
+}
+
+.hexagram-line {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--sun-gold), var(--sun-orange));
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hexagram-line.broken {
+    display: flex;
+    gap: 8px;
+}
+
+.hexagram-line.broken::before,
+.hexagram-line.broken::after {
+    content: '';
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--sun-gold), var(--sun-orange));
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hexagram-line.solid {
+    width: 60px;
+}
+
+.hexagram-line.broken {
+    width: 60px;
+}
+
+.hexagram-info {
+    text-align: center;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.hexagram-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-1) 0;
+}
+
+.iching-character {
+    font-size: 2rem;
+    color: var(--sun-gold);
+    margin: 0;
+    font-weight: bold;
+}
