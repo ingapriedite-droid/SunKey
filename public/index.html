@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SunKey - Discover Your Gene Key</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Landing Page / Input Form -->
+        <section id="input-section" class="section active">
+            <div class="header">
+                <div class="sun-icon">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </div>
+                <h1>SunKey</h1>
+                <p class="tagline">Discover Your Sun Gene Key</p>
+            </div>
+
+            <div class="card">
+                <form id="birth-form">
+                    <div class="form-group">
+                        <label for="birth-date">Date of Birth</label>
+                        <input type="date" id="birth-date" name="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birth-time">Time of Birth</label>
+                        <input type="time" id="birth-time" name="time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birth-place">Place of Birth</label>
+                        <input type="text" id="birth-place" name="place" placeholder="City, Country" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Calculate My Sun Key
+                    </button>
+                </form>
+            </div>
+
+            <div class="info-text">
+                <p>Enter your birth information to discover your Sun Gene Key — a unique frequency that reveals your path from Shadow to Gift to Siddhi.</p>
+            </div>
+        </section>
+
+        <!-- Results Page -->
+        <section id="results-section" class="section">
+            <div class="results-header">
+                <button id="back-btn" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    New Reading
+                </button>
+                <h2>Your Sun Gene Key</h2>
+            </div>
+
+            <div class="results-grid">
+                <div class="card gene-key-card">
+                    <div class="gene-key-number">
+                        <span class="label">Gene Key</span>
+                        <span id="result-number" class="number">--</span>
+                    </div>
+
+                    <div class="birth-info">
+                        <p><strong>Birth Date:</strong> <span id="result-date">--</span></p>
+                        <p><strong>Birth Time:</strong> <span id="result-time">--</span></p>
+                        <p><strong>Birth Place:</strong> <span id="result-place">--</span></p>
+                        <p><strong>Sun Position:</strong> <span id="result-longitude">--</span>° (<span id="result-zodiac">--</span>)</p>
+                    </div>
+                </div>
+
+                <div class="card spectrum-card">
+                    <h3>The Spectrum of Consciousness</h3>
+
+                    <div class="spectrum-item shadow">
+                        <div class="spectrum-label">
+                            <span class="spectrum-icon">🌑</span>
+                            <span class="spectrum-title">Shadow</span>
+                        </div>
+                        <div class="spectrum-value" id="result-shadow">--</div>
+                        <div class="spectrum-description">
+                            The reactive pattern — your core challenge
+                        </div>
+                    </div>
+
+                    <div class="spectrum-arrow">↓</div>
+
+                    <div class="spectrum-item gift">
+                        <div class="spectrum-label">
+                            <span class="spectrum-icon">🌟</span>
+                            <span class="spectrum-title">Gift</span>
+                        </div>
+                        <div class="spectrum-value" id="result-gift">--</div>
+                        <div class="spectrum-description">
+                            Your creative potential and natural talent
+                        </div>
+                    </div>
+
+                    <div class="spectrum-arrow">↓</div>
+
+                    <div class="spectrum-item siddhi">
+                        <div class="spectrum-label">
+                            <span class="spectrum-icon">✨</span>
+                            <span class="spectrum-title">Siddhi</span>
+                        </div>
+                        <div class="spectrum-value" id="result-siddhi">--</div>
+                        <div class="spectrum-description">
+                            The highest expression — transcendent wisdom
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gene Key Wheel -->
+            <div class="card wheel-card">
+                <h3>The 64 Gene Keys Wheel</h3>
+                <p class="wheel-description">Your Sun Gene Key is highlighted in the wheel below</p>
+                <div id="wheel-container"></div>
+            </div>
+
+            <!-- Placeholder for future content -->
+            <div class="card info-card">
+                <h3>About Your Gene Key</h3>
+                <p class="placeholder-text">
+                    Detailed descriptions and contemplations for Gene Key <span id="detail-number">--</span> will be added here.
+                </p>
+                <p class="placeholder-text">
+                    This space is reserved for deeper insights into the Shadow, Gift, and Siddhi of your Sun Gene Key.
+                </p>
+            </div>
+        </section>
+
+        <!-- Loading Overlay -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Calculating your Sun Gene Key...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" class="error-message">
+            <div class="error-content">
+                <span class="error-icon">⚠️</span>
+                <p id="error-text">An error occurred</p>
+                <button id="error-close" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>SunKey uses the Sun's ecliptic longitude at your birth to calculate your Gene Key number.</p>
+        <p class="small">Gene Keys Shadow, Gift, and Siddhi terms are used under fair use guidelines.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

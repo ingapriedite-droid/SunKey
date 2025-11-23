@@ -1,0 +1,540 @@
+/**
+ * SunKey Application Styles
+ * Beautiful, sun-themed design with warm colors and clean typography
+ */
+
+/* CSS Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Sun-themed color palette */
+    --sun-gold: #FFB800;
+    --sun-orange: #FF8C42;
+    --sun-yellow: #FFF4E6;
+    --sun-light: #FFFBF5;
+    --sun-glow: #FFD54F;
+
+    /* Neutral colors */
+    --white: #FFFFFF;
+    --black: #1A1A1A;
+    --gray-100: #F5F5F5;
+    --gray-200: #E0E0E0;
+    --gray-300: #BDBDBD;
+    --gray-700: #424242;
+    --gray-900: #212121;
+
+    /* Semantic colors */
+    --text-primary: #2C2C2C;
+    --text-secondary: #5C5C5C;
+    --border-color: #E8E8E8;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --shadow-medium: rgba(0, 0, 0, 0.12);
+    --shadow-large: rgba(0, 0, 0, 0.16);
+
+    /* Spacing system (8px base) */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-5: 40px;
+    --space-6: 48px;
+
+    /* Border radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-heading: 'Georgia', 'Times New Roman', serif;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--sun-light) 0%, var(--white) 100%);
+    min-height: 100vh;
+    padding: var(--space-3);
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-3);
+}
+
+/* Typography */
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-primary);
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: var(--space-2);
+    background: linear-gradient(135deg, var(--sun-orange), var(--sun-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: var(--space-3);
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-2);
+}
+
+p {
+    margin-bottom: var(--space-2);
+}
+
+/* Header Section */
+.header {
+    text-align: center;
+    margin-bottom: var(--space-5);
+    padding-top: var(--space-4);
+}
+
+.sun-icon {
+    display: inline-block;
+    color: var(--sun-gold);
+    margin-bottom: var(--space-2);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.tagline {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+/* Card Component */
+.card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-shadow: 0 4px 20px var(--shadow);
+    margin-bottom: var(--space-3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--shadow-medium);
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: var(--space-3);
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: var(--space-1);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: var(--space-2);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--sun-gold);
+    box-shadow: 0 0 0 3px rgba(255, 184, 0, 0.1);
+}
+
+/* Button Styles */
+.btn {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--sun-orange), var(--sun-gold));
+    color: var(--white);
+    width: 100%;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--white);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    border-color: var(--sun-gold);
+    background: var(--sun-yellow);
+}
+
+/* Info Text */
+.info-text {
+    text-align: center;
+    max-width: 600px;
+    margin: var(--space-4) auto 0;
+}
+
+.info-text p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+/* Section Management */
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Results Section */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+@media (min-width: 768px) {
+    .results-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Gene Key Card */
+.gene-key-card {
+    background: linear-gradient(135deg, var(--sun-yellow) 0%, var(--white) 100%);
+}
+
+.gene-key-number {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-4) 0;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: var(--space-3);
+}
+
+.gene-key-number .label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-1);
+}
+
+.gene-key-number .number {
+    font-size: 5rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    background: linear-gradient(135deg, var(--sun-orange), var(--sun-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.birth-info p {
+    margin-bottom: var(--space-1);
+    color: var(--text-secondary);
+}
+
+.birth-info strong {
+    color: var(--text-primary);
+}
+
+/* Spectrum Card */
+.spectrum-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.spectrum-item {
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-2);
+}
+
+.spectrum-item.shadow {
+    background: linear-gradient(135deg, #F5F5F5 0%, #E8E8E8 100%);
+}
+
+.spectrum-item.gift {
+    background: linear-gradient(135deg, var(--sun-yellow) 0%, var(--sun-glow) 100%);
+}
+
+.spectrum-item.siddhi {
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFE8B8 100%);
+}
+
+.spectrum-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-bottom: var(--space-1);
+}
+
+.spectrum-icon {
+    font-size: 1.5rem;
+}
+
+.spectrum-title {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.spectrum-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+    font-family: var(--font-heading);
+}
+
+.spectrum-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.spectrum-arrow {
+    text-align: center;
+    color: var(--sun-gold);
+    font-size: 2rem;
+    margin: var(--space-1) 0;
+}
+
+/* Wheel Card */
+.wheel-card {
+    text-align: center;
+}
+
+.wheel-description {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
+}
+
+#wheel-container {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-3);
+}
+
+/* Info Card */
+.info-card {
+    background: var(--sun-light);
+}
+
+.placeholder-text {
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.8;
+}
+
+/* Loading Overlay */
+.loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.loading.active {
+    display: flex;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--sun-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--space-2);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.error-message {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-message.active {
+    display: flex;
+}
+
+.error-content {
+    background: var(--white);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 40px var(--shadow-large);
+    text-align: center;
+    max-width: 400px;
+    margin: var(--space-3);
+}
+
+.error-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+.error-content p {
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: var(--space-5) var(--space-3);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+footer .small {
+    font-size: 0.75rem;
+    color: var(--gray-300);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    .gene-key-number .number {
+        font-size: 4rem;
+    }
+
+    .results-header {
+        flex-direction: column;
+        gap: var(--space-2);
+        align-items: flex-start;
+    }
+}
+
+/* Wheel SVG Styles */
+.wheel-segment {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.wheel-segment:hover {
+    opacity: 0.8;
+}
+
+.wheel-segment.highlighted {
+    filter: drop-shadow(0 0 8px var(--sun-gold));
+}
+
+.wheel-text {
+    font-size: 10px;
+    font-weight: 600;
+    fill: var(--text-primary);
+    pointer-events: none;
+}
+
+.wheel-tooltip {
+    position: absolute;
+    background: var(--white);
+    border: 2px solid var(--sun-gold);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    box-shadow: 0 4px 12px var(--shadow);
+    font-size: 0.875rem;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+}
+
+.wheel-tooltip.active {
+    display: block;
+}
